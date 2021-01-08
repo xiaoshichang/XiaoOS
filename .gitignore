@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+bin/
+booter.img
+*.bin
+*.lst
+env/bochsout.txt
