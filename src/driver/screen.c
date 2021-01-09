@@ -21,7 +21,7 @@ int get_offset_by_col_row(int col, int row)
     return (row * MAX_COLS + col) * 2;
 }
 
-// 
+// get offset by reading from io port
 int get_offset_by_cursor()
 {
     // The device uses its control register as an index
@@ -38,7 +38,7 @@ int get_offset_by_cursor()
     return offset * 2; /* Position * size of character cell */
 }
 
-//
+// convert offset to row and col and set to screen by writing io port
 void set_cursor_by_offset(int offset)
 {
     offset /= 2; // Convert from cell offset to char offset .
@@ -51,6 +51,7 @@ void set_cursor_by_offset(int offset)
     port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset & 0xff));
 }
 
+// move to memory manger module later
 void memory_copy(char* source, char* dest, int count)
 {
     int i;
@@ -60,6 +61,7 @@ void memory_copy(char* source, char* dest, int count)
     }
 }
 
+// move all characters up 1 row and clean last row
 int handle_scrolling(int offset)
 {
     int i;
@@ -69,7 +71,8 @@ int handle_scrolling(int offset)
         return offset;
     }
 
-    memory_copy(get_offset_by_col_row(0, 1) + (unsigned char*)VIDEO_ADDRESS, 
+    memory_copy(
+        get_offset_by_col_row(0, 1) + (unsigned char*)VIDEO_ADDRESS, 
         get_offset_by_col_row(0, 0) + (unsigned char*)VIDEO_ADDRESS, 
         MAX_ROWS * (MAX_ROWS - 1) * 2);
 
