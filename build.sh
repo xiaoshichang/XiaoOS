@@ -10,12 +10,14 @@ nasm src/boot/kernel_entry.asm -f elf -o bin/kernel_entry.o
 # build kernel
 # -m32 let gcc generate kernel.o in 32bit format
 # -fno-pie let gcc
-gcc -fno-pie -m32 -ffreestanding -c src/kernel/kernel.c -o bin/kernel.o
+gcc -I. -fno-pie -m32 -ffreestanding -c src/kernel/kernel.c -o bin/kernel.o
+gcc -I. -fno-pie -m32 -ffreestanding -c src/driver/port.c -o bin/port.o
+gcc -I. -fno-pie -m32 -ffreestanding -c src/driver/screen.c -o bin/screen.o
 
 # link kernel and kernel_entry
 # in 64bit environment, ld will default use 64bit mode and produce error.
 # -m elf_i386 let ld work under 32bit mode.
-ld -m elf_i386 -o bin/kernel.bin -Ttext 0x1000 bin/kernel.o bin/kernel_entry.o --oformat binary
+ld -m elf_i386 -o bin/kernel.bin -Ttext 0x1000 bin/kernel.o bin/port.o bin/screen.o bin/kernel_entry.o --oformat binary
 
 # combine booter.bin and kernel.bin to generate XiaoOS.bin
 cat bin/booter.bin bin/kernel.bin > bin/XiaoOS.bin
